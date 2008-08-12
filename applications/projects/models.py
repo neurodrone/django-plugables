@@ -89,7 +89,7 @@ class Project(models.Model):
 class CodeRepository(models.Model):
     """
     A code repository that you check code into somewhere. Currently only SVN
-    is supported, but other forms should be hard to support.
+    is supported, but other forms shouldn't be hard to support.
     """
     
     SCM_CHOICES = (
