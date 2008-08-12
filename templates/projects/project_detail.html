@@ -27,7 +27,7 @@
         {% for commit in repository.commits.all|slice:":10" %}
             <li>
                 {% if commit.url %}<a href="{{ commit.url }}" class="revision">{{ commit.revision }}</a>{% else %}<span class="revision">{{ commit.revision }}</span>{% endif %} was committed <strong>{{ commit.committed|timesince }} ago.</strong>
-                <div>{% if commit.message %}{{ commit.message|urlize|typogrify }}{% else %}No commit message supplied.{% endif %}</div>
+                <div>{% if commit.message %}{{ commit.message|urlize|typogrify|removetags:"a" }}{% else %}No commit message supplied.{% endif %}</div>
             </li>    
         {% endfor %}
         </ul>
