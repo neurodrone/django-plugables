@@ -12,10 +12,14 @@ class ItemManager(models.Manager):
     def __init__(self):
         self.models_by_name = {}
     
-    def create_or_update(self, instance, timestamp=None, tags="", source="INTERACTIVE", source_id=""):
+    def create_or_update(self, instance, **kwargs):
         """
         Create or update an Item from some instace.
         """
+        timestamp = kwargs.get("timestamp")
+        tags = kwargs.get("tags", "")
+        source = kwargs.get("source", "INTERACTIVE")
+        source_id = kwargs.get("source_id", "")
         # If the instance hasn't already been saved, save it first. This
         # requires disconnecting the post-save signal that might be sent to
         # this function (otherwise we could get an infinite loop).
