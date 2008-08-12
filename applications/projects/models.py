@@ -4,8 +4,8 @@ from django.db import models
 from django.db.models import permalink
 from django.utils import text
 
-from applications.core.models import Item
-from applications.tagging.fields import TagField
+from core.models import Item
+from tagging.fields import TagField
 
 
 class Developer(models.Model):
@@ -141,7 +141,7 @@ class CodeCommit(models.Model):
     
 
 # Initilization
-from applications.projects import register
+from projects import register
 del register
 
 # Register item objects to be "followed"

@@ -8,8 +8,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sitemaps import ping_google
 
 from managers import *
-from applications.template_utils.markup import formatter
-from applications.typogrify.templatetags.typogrify import typogrify
+from template_utils.markup import formatter
+from typogrify.templatetags.typogrify import typogrify
 
 
 class Entry(models.Model):

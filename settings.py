@@ -1,12 +1,13 @@
 import os.path
+import sys
 
 
 # Getting Started
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = BASE_DIR
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, 'applications'))
 
 # Debug Settings
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 # Basic Settings
@@ -30,7 +31,7 @@ USE_I18N = True
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'applications.core.middleware.url.UrlMiddleware', # Custom Middleware
+    'core.middleware.url.UrlMiddleware', # Custom Middleware
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
@@ -40,16 +41,38 @@ USE_ETAGS = True
 APPEND_SLASH = True
 REMOVE_WWW = True
 
-
 # Template Settings
 MARKUP_FILTER = ('markdown', {})
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates'),
+    os.path.join(PROJECT_ROOT, 'templates'),
 )
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
 )
+GENERIC_CONTENT_LOOKUP_KWARGS = {
+    'blog.entry': { 'status': 1 }
+}
+
+# Secret Key Generator
+if not hasattr(globals(), 'SECRET_KEY'):
+    SECRET_FILE = os.path.join(PROJECT_ROOT, 'secret.txt')
+    try:
+        SECRET_KEY = open(SECRET_FILE).read().strip()
+    except IOError:
+        try:
+            from random import choice
+            SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
+            secret = file(SECRET_FILE, 'w')
+            secret.write(SECRET_KEY)
+            secret.close()
+        except IOError:
+            raise Exception('Please create a %s file with random characters to generate your secret key!' % SECRET_FILE)
+        
+    
+
+# Tagging (django-tagging)
+FORCE_LOWERCASE_TAGS = True
 
 # Import Local Settings
 try:

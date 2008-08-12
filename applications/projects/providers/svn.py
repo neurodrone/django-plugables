@@ -10,8 +10,8 @@ except ImportError:
 from django.db import transaction
 from django.utils.encoding import smart_unicode
 
-from applications.core.models import Item
-from applications.projects.models import CodeRepository, CodeCommit
+from core.models import Item
+from projects.models import CodeRepository, CodeCommit
 
 
 class RepositorySyncr:
