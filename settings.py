@@ -72,12 +72,10 @@ try:
 except ImportError:
     pass
 
-# these settings are dependant on local settings
-
 # Cache Settings
 if DEBUG:
     CACHE_BACKEND = "dummy:///"
 else:
-    CACHE_BACKEND = "memcached://208.78.98.196:11211/"
+    CACHE_BACKEND = "memcached://172.18.0.39:11211/"
     CACHE_MIDDLEWARE_SECONDS = 60 * 60
     CACHE_MIDDLEWARE_KEY_PREFIX = 'plugables'
