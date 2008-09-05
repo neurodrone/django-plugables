@@ -32,14 +32,14 @@ INTERNAL_IPS            = ('',)
 INSTALLED_APPS = (
 
     # Plugables
-    'applications.blog',
-    'applications.core',
-    'applications.projects',
+    'blog',
+    'core',
+    'projects',
     
     # Plugins
-    'applications.tagging',
-    'applications.template_utils',
-    'applications.typogrify',
+    'tagging',
+    'template_utils',
+    'typogrify',
     
     # Django Core
     'django.contrib.contenttypes',

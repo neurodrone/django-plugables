@@ -37,7 +37,7 @@ developer_detail = {
 
 repository_list = {
     'queryset': Repository.objects.all(),
-    'template_object_name': 'repository',   
+    'template_object_name': 'repository',
 }
 
 commit_list = {

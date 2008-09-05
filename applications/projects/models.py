@@ -5,7 +5,7 @@ from django.db.models import permalink
 from django.utils import text
 
 #from core.models import Item
-from applications.tagging.fields import TagField
+from tagging.fields import TagField
 
 
 class Developer(models.Model):
