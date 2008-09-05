@@ -8,14 +8,18 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sitemaps import ping_google
 
 from managers import *
-from applications.template_utils.markup import formatter
-from applications.typogrify.templatetags.typogrify import typogrify
+from core.constants import MARKUP_CHOICES
+from tagging.fields import TagField
+from template_utils.markup import formatter
+from typogrify.templatetags.typogrify import typogrify
 
 
 class Entry(models.Model):
     """
+    An ``Entry`` contains data pertainting to a specific topic. Entries are 
+    tied together by tags to create topic groups.
     """
-
+    
     LIVE_STATUS = 1
     DRAFT_STATUS = 2
     HIDDEN_STATUS = 3    
@@ -26,32 +30,32 @@ class Entry(models.Model):
     )
         
     # Dates
-    published           = models.DateTimeField('Date Published', default=datetime.now)
-    created             = models.DateTimeField(editable=False)
-    updated             = models.DateTimeField(editable=False)
+    published = models.DateTimeField('Date Published', default=datetime.now)
+    created = models.DateTimeField(editable=False)
+    updated = models.DateTimeField(editable=False)
     
     # Meta
-    author              = models.ForeignKey(User)
-    title               = models.CharField(max_length=250, db_index=True)
-    slug                = models.SlugField()
+    author = models.ForeignKey(User)
+    title = models.CharField(max_length=250, db_index=True)
+    slug = models.SlugField()
+    
+    # Categorization
+    tags = TagField(help_text='Add tags for this entry (space separated).')
     
     # Content
-    summary             = models.TextField(help_text='Enter a brief summary of this blog entry.')
-    body                = models.TextField(help_text='Enter the main content of this entry.')
-    footnotes           = models.TextField(blank=True, help_text='Enter footnotes if needed.')
+    summary = models.TextField(help_text='Enter a brief summary of this blog entry.')
+    body = models.TextField(help_text='Enter the main content of this entry.')
     
     # Pre-Processed Content
-    summary_processed   = models.TextField('Processed Summary', editable=False)
-    body_processed      = models.TextField('Processed Body', editable=False)
-    footnotes_processed = models.TextField('Processed Footnotes', blank=True, editable=False)
+    summary_processed = models.TextField('Processed Summary', editable=False)
+    body_processed = models.TextField('Processed Body', editable=False)
     
     # Options
-    status              = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=LIVE_STATUS, help_text='Select the status of this blog entry.')
-    enable_comments     = models.BooleanField('Comments?', default=True, help_text='Select \'True\' if you wish to enable visitors to comment on this entry.')
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=LIVE_STATUS, help_text='Select the status of this blog entry.')
+    enable_comments = models.BooleanField('Comments?', default=True, help_text='Select \'True\' if you wish to enable visitors to comment on this entry.')
     
     # Mangers
-    objects             = models.Manager()
-    live                = LiveEntryManager()
+    objects = LiveEntryManager()
     
     class Meta:
         get_latest_by = 'published'
@@ -79,58 +83,16 @@ class Entry(models.Model):
         """
         self.summary_processed = typogrify(formatter(self.summary))
         self.body_processed = typogrify(formatter(self.body))
-        self.footnotes_processed = typogrify(formatter(self.footnotes))
         return self
     
-    def get_comments(self):
-        """
-        Returns a list of comments associated with the entry.
-        """
-        from django.contrib.contenttypes.models import ContentType
-        ctype = ContentType.objects.get(app_label__exact='blog', name__exact='entry')
-        return Comment.objects.filter(content_type=ctype.id, object_id=self.id)
+    def _get_tags(self):
+        return Tag.objects.get_for_object(self)
     
-    def get_comment_count(self):
-        """
-        Returns the number of comments on the entry.
-        """
-        return self.get_comments().count()
+    def _set_tags(self, tag_list):
+        Tag.objects.update_tags(self, tag_list)
     
-    def get_featured_comments(self):
-        """
-        Returns a list of featured comments associated with the entry.
-        """      
-        return self.get_comments().filter(approved=True, is_featured=True)
-    
-    def get_featured_comment_count(self):
-        """
-        Returns the number of featured comments on the entry.
-        """
-        return self.get_featured_comments().count()
-    
-    def get_approved_comments(self):
-        """
-        Returns a list of approved comments associated with the entry.
-        """            
-        return self.get_comments().filter(approved=True)
-    
-    def get_approved_comment_count(self):
-        """
-        Returns the number of approved comments on the entry.
-        """
-        return self.get_approved_comments().count()
-    
-    def get_latest_comment(self):
-        """
-        Returns the latest comment on the entry.
-        """
-        return self.get_approved_comments().latest()
-    
-    def comment_period_open(self):
-        """
-        Returns True is comments are open on this entry (entry has been posted within the last 30 days).
-        """
-        return self.enable_comments and datetime.datetime.today() - datetime.timedelta(30) <= self.published
+    def get_tags(self):
+        return [value.strip(' ,') for value in self.tags.split()]
     
     @property
     def get_next(self):
@@ -160,7 +122,3 @@ class Entry(models.Model):
         except Exception:
             pass
     
-
-# Initialization
-from blog import register
-del register
