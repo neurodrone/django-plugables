@@ -2,13 +2,13 @@
 tests = r"""
 >>> import os
 >>> from django import newforms as forms
->>> from forms import TagField
->>> import settings
->>> from models import Tag, TaggedItem
->>> from tests.models import Article, Link, Perch, Parrot, FormTest
->>> from utils import calculate_cloud, get_tag_list, get_tag, parse_tag_input
->>> from utils import LINEAR
->>> from validators import isTagList, isTag
+>>> from tagging.forms import TagField
+>>> from tagging import settings
+>>> from tagging.models import Tag, TaggedItem
+>>> from tagging.tests.models import Article, Link, Perch, Parrot, FormTest
+>>> from tagging.utils import calculate_cloud, get_tag_list, get_tag, parse_tag_input
+>>> from tagging.utils import LINEAR
+>>> from tagging.validators import is_tag_list, is_tag
 
 #############
 # Utilities #
@@ -154,18 +154,18 @@ ValueError: Invalid distribution algorithm specified: cheese.
 
 # Validators ##################################################################
 
->>> isTagList('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar', {})
+>>> is_tag_list('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar', {})
 Traceback (most recent call last):
     ...
 ValidationError: [u'Each tag may be no more than 50 characters long.']
 
->>> isTag('"test"', {})
->>> isTag(',test', {})
->>> isTag('f o o', {})
+>>> is_tag('"test"', {})
+>>> is_tag(',test', {})
+>>> is_tag('f o o', {})
 Traceback (most recent call last):
     ...
 ValidationError: [u'Multiple tags were given.']
->>> isTagList('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar', {})
+>>> is_tag_list('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar', {})
 Traceback (most recent call last):
     ...
 ValidationError: [u'Each tag may be no more than 50 characters long.']
@@ -412,7 +412,7 @@ u'test5'
 >>> spaces = Tag.objects.create(name='spa ces')
 >>> comma = Tag.objects.create(name='com,ma')
 
->>> from utils import edit_string_for_tags
+>>> from tagging.utils import edit_string_for_tags
 >>> edit_string_for_tags([plain])
 u'plain'
 >>> edit_string_for_tags([plain, spaces])

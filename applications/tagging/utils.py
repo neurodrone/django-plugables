@@ -10,7 +10,9 @@ from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext as _
 
 # Python 2.3 compatibility
-if not hasattr(__builtins__, 'set'):
+try:
+    set
+except NameError:
     from sets import Set as set
 
 def parse_tag_input(input):
@@ -157,7 +159,7 @@ def get_tag_list(tags):
        * A ``Tag`` ``QuerySet``.
 
     """
-    from models import Tag
+    from tagging.models import Tag
     if isinstance(tags, Tag):
         return [tags]
     elif isinstance(tags, QuerySet) and tags.model is Tag:
@@ -199,7 +201,7 @@ def get_tag(tag):
 
     If no matching tag can be found, ``None`` will be returned.
     """
-    from models import Tag
+    from tagging.models import Tag
     if isinstance(tag, Tag):
         return tag
 
