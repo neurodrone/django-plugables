@@ -9,8 +9,8 @@ from tagging.fields import TagField
 class Item(models.Model):
     """
     A generic item used to tie the objects to the respective data provider.
-    """
     
+    """
     # Generic relation to the object.
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField()
@@ -35,20 +35,16 @@ class Item(models.Model):
         ordering = ['-timestamp']
         unique_together = [('content_type', 'object_id')]
     
-    def __str__(self):
+    def __unicode__(self):
         return "%s: %s" % (self.content_type.model_class().__name__, self.object_str)
         
     def __cmp__(self, other):
         return cmp(self.timestamp, other.timestamp)
     
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         ct = '%s %s' % (self.content_type.app_label, self.content_type.model.lower())
         self.object_str = str(self.object)
         if hasattr(self.object, 'url'):
             self.url = self.object.url
-        super(Item, self).save()
+        super(Item, self).save(force_insert, force_update)
     
-
-# Initilization
-from core import register
-del register
