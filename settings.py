@@ -70,7 +70,7 @@ FORCE_LOWERCASE_TAGS = True
 
 # Import Local Settings
 try:
-    from plugables import *
+    from locals import *
 except ImportError:
     pass
 
