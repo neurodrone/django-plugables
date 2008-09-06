@@ -1,6 +1,6 @@
 from django.db import models
 
-from fields import TagField
+from tagging.fields import TagField
 
 class Perch(models.Model):
     size = models.IntegerField()
