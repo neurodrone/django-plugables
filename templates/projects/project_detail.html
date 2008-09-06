@@ -35,10 +35,26 @@
     <p>Ack. We don't support showing the commits for this project's repository type ({{ repository.type }}).</p>
     {% endifequal %}
     {% endfor %}
+    
+    {% get_comment_list for project as comments %}
+    {% for comment in comments %}
+        {{ comment.name }}
+        {{ comment.url }}
+        {{ comment.body }}
+    {% endfor %}
+    
+    {% get_comment_form for project as form %}
+    <form action="{% comment_form_target %}" method="post">
+        <ul>
+        {{ form.as_ul }}
+        </ul>
+        <button type="submit">Preview</button>
+    </form>
+    
 </div>
 {% endblock %}
 {% block sidebar %}
-<div id="sidebar" class="grid_5">    
+<div id="sidebar" class="grid_5">
     {% if project.owners.all %}
     <h3>Project Owner{{ project.owners.all|pluralize }}</h3>
     <ul>

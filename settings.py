@@ -17,7 +17,7 @@ LANGUAGE_CODE = 'en-us'
 # Site Settings
 SITE_ID = 1
 ROOT_URLCONF = 'urls'
-USE_I18N = True
+USE_I18N = False
 
 # Middleware
 MIDDLEWARE_CLASSES = (

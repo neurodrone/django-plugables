@@ -26,12 +26,9 @@ urlpatterns = patterns('',
     
     # Nuts and Bolts
     (r'^', include('projects.urls')),
-    
-    # Blog
+    #(r'^about/', include('contact_form.urls')),
     (r'^blog/', include('blog.urls')),
-    
-    # Contact Form / About
-    (r'^about/', include('contact_form.urls')),
+    (r'^comments/', include('django.contrib.comments.urls')),
     
     # Sitemaps
     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
